@@ -1,0 +1,6 @@
+[submodule "CHAOS.Portal.Client-PHP"]
+	path = CHAOS.Portal.Client-PHP
+	url = git@github.com:CHAOS-Community/CHAOS.Portal.Client-PHP.git
+[submodule "lib/chaos-client"]
+	path = lib/chaos-client
+	url = git@github.com:CHAOS-Community/CHAOS.Portal.Client-PHP.git
