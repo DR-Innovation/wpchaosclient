@@ -1,0 +1,163 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WPChaosClient\n"
+"POT-Creation-Date: 2013-08-12 09:56+0100\n"
+"PO-Revision-Date: 2013-08-12 09:56+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: da_DK\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_ex:1,2c;"
+"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-Basepath: .\n"
+"X-Textdomain-Support: yes\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
+
+#: ../config.php:10
+msgid "General Settings"
+msgstr "Generelle indstillinger"
+
+#: ../config.php:15
+msgid "Service Path"
+msgstr "Servicesti"
+
+#: ../config.php:20
+msgid "Client GUID"
+msgstr "Klient GUID"
+
+#: ../config.php:25
+msgid "Access Point GUID"
+msgstr "Adgangspunkt GUID"
+
+#: ../config.php:30
+msgid "E-mail used for authentication"
+msgstr "E-mail til autentificering"
+
+#: ../config.php:35
+msgid "Password"
+msgstr "Adgangskode"
+
+#: ../wpchaosclient.php:175
+msgid "CHAOS Client"
+msgstr "CHAOS Klient"
+
+#: ../wpchaosclient.php:176
+msgid "CHAOS"
+msgstr "CHAOS"
+
+#: ../wpchaosclient.php:194
+msgid "Connection to CHAOS is established"
+msgstr "Forbindelse til CHAOS er etableret"
+
+#: ../wpchaosclient.php:196
+#, php-format
+msgid "(session is %s last updated %s)"
+msgstr "(session er %s sidst opdateret %s)"
+
+#: ../wpchaosclient.php:199
+msgid "Could not connect to CHAOS. Please check the details below."
+msgstr ""
+"Kunne ikke forbinde til CHAOS. Kontroller venligst nedenstående oplysninger."
+
+#: ../wpchaosclient.php:218
+msgid "CHAOS Object - Featured"
+msgstr "CHAOS Objekt - Fremhævet"
+
+#: ../wpchaosclient.php:227
+msgid "CHAOS Object - Main"
+msgstr "CHAOS Objekt - Primær"
+
+#: ../wpchaosclient.php:236
+msgid "CHAOS Object - Sidebar"
+msgstr "CHAOS Objekt - Sidebar"
+
+#: ../widgets/attribute.php:26
+msgid "CHAOS Object Attribute"
+msgstr "CHAOS Objekt-attribut"
+
+#: ../widgets/attribute.php:27
+msgid "Style and display data from a CHAOS object"
+msgstr "Design og vis data fra et CHAOS objekt"
+
+#: ../widgets/attribute.php:32
+msgid "Attribute"
+msgstr "Attribut"
+
+#: ../widgets/attribute.php:39 ../widgets/multiattribute.php:47
+msgid "Markup"
+msgstr "Markup"
+
+#: ../widgets/multiattribute.php:41
+msgid "CHAOS Object Multi Attributes"
+msgstr "CHAOS Objekt-multiattributter"
+
+#: ../widgets/multiattribute.php:42
+msgid "Style and display several data from a CHAOS object"
+msgstr "Design og vis flere data fra et CHAOS objekt"
+
+#: ../widgets/multiattribute.php:111
+#, php-format
+msgid "Template \"%s\" not found for CHAOS Object Multi Attributes Widget"
+msgstr ""
+"Skabelon \"%s\" blev ikke fundet for widgeten CHAOS Objekt-multiattributter"
+
+#: ../widgets/multiattribute.php:141
+msgid "Allowed attributes:"
+msgstr "Tilladte attributter:"
+
+#: ../widgets/multiattribute.php:146 ../widgets/multiattribute.php:154
+msgid "None"
+msgstr "Ingen"
+
+#: ../widgets/multiattribute.php:149
+msgid "Found template files:"
+msgstr "Fundne skabelonfiler:"
+
+#~ msgid "Page not found"
+#~ msgstr "Side ikke fundet"
+
+#~ msgid "%s on Facebook"
+#~ msgstr "%s på Facebook"
+
+#~ msgid "%s on Twitter"
+#~ msgstr "%s på Twitter"
+
+#~ msgid "Page %s"
+#~ msgstr "Side %s"
+
+#~ msgid "Share on %s"
+#~ msgstr "Del på %s"
+
+#~ msgid "Send as e-mail"
+#~ msgstr "Send som e-mail"
+
+#~ msgctxt "verb"
+#~ msgid "Search"
+#~ msgstr "Søg"
+
+#~ msgid "Refine search"
+#~ msgstr "Præciser søgning"
+
+#~ msgid "All Formats"
+#~ msgstr "Alle Typer"
+
+#~ msgid "All Organizations"
+#~ msgstr "Alle Organisationer"
+
+#~ msgid "Views"
+#~ msgstr "Visninger"
+
+#~ msgid "Read more at %s"
+#~ msgstr "Læs mere hos %s"
+
+#~ msgid "Tags"
+#~ msgstr "Tags"
+
+#~ msgid "About %s"
+#~ msgstr "Om %s"
