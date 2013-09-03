@@ -97,8 +97,10 @@ class WPChaosClient {
 				echo "<div class='debugging-chaos-requests' style='background:#EEEEEE;position:absolute;top:0px;left:0px;right:0px;opacity:0.9;z-index:1050;padding:1em;'>";
 				$c = 1;
 				foreach(WPChaosClient::$debug_calls as $call) {
+					$duration = round($call['duration'] * 1000);
+					$cached = $call['cached'] ? " CACHED" : "";
 					echo "<div class='debugging-chaos-call' style='border-bottom:1px solid black;'>";
-					echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service.</h1>";
+					echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service (took $duration ms $cached).</h1>";
 					echo "<pre style='margin:1em;color:#000000;'>";
 					echo htmlentities(print_r($call, true));
 					echo "</pre></div>";

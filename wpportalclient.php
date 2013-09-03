@@ -22,6 +22,8 @@ class WPPortalClient extends PortalClient {
 	const SESSION_TIMEOUT = '18 minutes';
 	const WP_CHAOS_CLIENT_SESSION_UPDATED_KEY = 'wpchaosclient-session-updated';
 	const WP_CHAOS_CLIENT_SESSION_GUID_KEY = 'wpchaosclient-session-guid';
+	const CACHE_GROUP = 'WPPortalClient';
+	const CACHE_EXPIRES = 7200; // 60*60*2 = Two hours
 	
 	public function __construct($servicePath, $clientGUID) {
 		// Make sure that the constructor is called without the session getting autocreated.
@@ -38,7 +40,8 @@ class WPPortalClient extends PortalClient {
 		return $this->accumulatedResponseTime;
 	}
 
-	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
+	public function CallService($path, $method, array $parameters = null, $requiresSession = true, $allow_cached_response = true) {
+		
 		if((!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) && get_option('wpchaos-accesspoint-guid')) {
 			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
 		}
@@ -51,14 +54,30 @@ class WPPortalClient extends PortalClient {
 		$parameters['query'] = implode("+AND+", array_merge($query, $this->global_constraints));
 		
 		$beforeCall = microtime(true);
-		$response = parent::CallService($path, $method, $parameters, $requiresSession);
-		$this->accumulatedResponseTime += microtime(true) - $beforeCall;
+		
+		// Check if the request is cached.
+		$cache_key = md5(strval($path) . strval($method) . print_r($parameters, true) . strval($requiresSession));
+
+		if($allow_cached_response) {
+			$cached_response = wp_cache_get($cache_key, self::CACHE_GROUP);
+		}
+		if(isset($cached_response) && $cached_response !== false) {
+			$response = $cached_response;
+		} else {
+			$response = parent::CallService($path, $method, $parameters, $requiresSession);
+			// Update the cache.
+			wp_cache_set($cache_key, $response, self::CACHE_GROUP, self::CACHE_EXPIRES);
+		}
+		$call_duration = microtime(true) - $beforeCall;
+		$this->accumulatedResponseTime += $call_duration;
 
 		do_action('wpportalclient-service-call-returned', array(
 			'path' => $path,
 			'method' => $method,
 			'parameters' => $parameters,
-			'response' => $response
+			'response' => $response,
+			'duration' => $call_duration,
+			'cached' => ($cached_response !== false)
 		));
 		
 		// Errors should throw exceptions.
