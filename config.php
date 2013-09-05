@@ -3,7 +3,7 @@
  * @package WP Chaos Client
  * @version 1.0
  */
-return array(
+$settings = array(
 	array(
 		/*Sections*/
 		'name'		=> 'default',

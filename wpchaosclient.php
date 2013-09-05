@@ -121,8 +121,10 @@ class WPChaosClient {
 	 */
 	public function register_settings() {
 
-		//Populate
-		$this->settings = apply_filters('wpchaos-config', include('config.php'));
+		// This include creates a variable called $settings.
+		unset($settings);
+		include('config.php');
+		$this->settings = apply_filters('wpchaos-config', $settings);
 
 		foreach($this->settings as $section) {
 
