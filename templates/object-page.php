@@ -5,7 +5,7 @@
  */
 get_header(); ?>
 
-<article class="container single-material" id="<? echo WPChaosClient::get_object()->GUID ?>">
+<article class="container single-material" id="<?php echo WPChaosClient::get_object()->GUID ?>">
 	<div>
 		<div class="col-lg-9 col-12">
 			<div>
