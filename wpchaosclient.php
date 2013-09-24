@@ -318,6 +318,8 @@ class WPChaosClient {
 		
 		if($searchQuery) {
 			try {
+				// Don't cache an object page.
+				self::instance()->setCacheResponses(false);
 				$serviceResult = self::instance()->Object()->Get(
 					$searchQuery,	// Search query
 					null,	// Sort

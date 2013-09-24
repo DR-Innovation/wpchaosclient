@@ -39,8 +39,15 @@ class WPPortalClient extends PortalClient {
 	public function getAccumulatedResponseTime() {
 		return $this->accumulatedResponseTime;
 	}
+	
+	// Caching is on by default.
+	protected $_allow_cached_response = true;
+	
+	public function setCacheResponses($allow_cached_response) {
+		$this->_allow_cached_response = $allow_cached_response;
+	}
 
-	public function CallService($path, $method, array $parameters = null, $requiresSession = true, $allow_cached_response = true) {
+	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
 		
 		if((!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) && get_option('wpchaos-accesspoint-guid')) {
 			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
@@ -58,7 +65,7 @@ class WPPortalClient extends PortalClient {
 		// Check if the request is cached.
 		$cache_key = md5(strval($path) . strval($method) . print_r($parameters, true) . strval($requiresSession));
 
-		if($allow_cached_response) {
+		if($this->_allow_cached_response) {
 			$cached_response = wp_cache_get($cache_key, self::CACHE_GROUP);
 		}
 		if(isset($cached_response) && $cached_response !== false) {
