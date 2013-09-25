@@ -67,8 +67,10 @@ class WPPortalClient extends PortalClient {
 
 		if($this->_allow_cached_response) {
 			$cached_response = wp_cache_get($cache_key, self::CACHE_GROUP);
+		} else {
+			$cached_response = false;
 		}
-		if(isset($cached_response) && $cached_response !== false) {
+		if($cached_response !== false) {
 			$response = $cached_response;
 		} else {
 			$response = parent::CallService($path, $method, $parameters, $requiresSession);
