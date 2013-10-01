@@ -49,16 +49,22 @@ class WPPortalClient extends PortalClient {
 
 	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
 		
-		if((!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] == null) && get_option('wpchaos-accesspoint-guid')) {
+		//If accessPointGUID is type null and a global access point is present in settings,
+		//include the latter as accessPointGUID
+		if((!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] === null) && get_option('wpchaos-accesspoint-guid')) {
 			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
+		//If accessPointGUID is type false, we do not want it included
+		//A session will be used instead
+		} else if($parameters['accessPointGUID'] === false) {
+			unset($parameters['accessPointGUID']);
 		}
 		
-		if(array_key_exists('query', $parameters) && $parameters['query'] != "") {
-			$query = array('(' . $parameters['query'] . ')');
-		} else {
-			$query = array();
-		}
-		$parameters['query'] = implode("+AND+", array_merge($query, $this->global_constraints));
+		// if(array_key_exists('query', $parameters) && $parameters['query'] != "") {
+		// 	$query = array('(' . $parameters['query'] . ')');
+		// } else {
+		// 	$query = array();
+		// }
+		// $parameters['query'] = implode("+AND+", array_merge($query, $this->global_constraints));
 		
 		$beforeCall = microtime(true);
 		

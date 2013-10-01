@@ -93,8 +93,8 @@ class WPChaosClient {
 				WPChaosClient::$debug_calls[] = $call;
 			});
 			
-			add_action('admin_footer', array(&$this,'debug_chaos_output'));
-			add_action('wp_footer', array(&$this,'debug_chaos_output'));
+			add_action('admin_footer', array(__CLASS__,'debug_chaos_output'));
+			add_action('wp_footer', array(__CLASS__,'debug_chaos_output'));
 		}
 	}
 
@@ -548,7 +548,7 @@ class WPChaosClient {
 		require("widgets/multiattribute.php");
 	}
 
-	public function debug_chaos_output() {
+	public static function debug_chaos_output() {
 		echo "<div class='debugging-chaos-requests' style='background:#EEEEEE;position:absolute;top:0px;left:0px;right:0px;opacity:0.9;z-index:1050;padding:1em;'>";
 		$c = 1;
 		foreach(WPChaosClient::$debug_calls as $call) {
