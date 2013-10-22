@@ -490,9 +490,9 @@ class WPChaosClient {
 		return implode("+AND+", $result);
 	}
 	
-	public static function index_search(array $facetFields, $query = "") {
+	public static function index_search(array $facetFields, $query = "", $accessPointGUID = null) {
 		$result = array();
-		$facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query($facetFields), $query);
+		$facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query($facetFields), $query, $accessPointGUID);
 		foreach($facetsResponse->Index()->Results() as $facetResult) {
 			foreach($facetResult->FacetFieldsResult as $fieldResult) {
 				$result[$fieldResult->Value] = array();
