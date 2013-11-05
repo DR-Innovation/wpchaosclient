@@ -104,6 +104,11 @@ class WPPortalClient extends PortalClient {
 			throw new \CHAOSException($response->Statistics()->Error()->Message());
 		} elseif($response->EmailPassword() != null && !$response->EmailPassword()->WasSuccess()) {
 			throw new \CHAOSException($response->EmailPassword()->Error()->Message());
+		//If session has expired and has not been updated, force update and start over
+		} elseif($response->MCM() != null && !$response->MCM()->WasSuccess() && $response->MCM()->Error()->Message() == 'SessionGUID is invalid or has expired' ) {
+			error_log("Triggering forced update of SessionGUID.");
+			$this->resetSession();
+			return $this->CallService($path, $method, $parameters, $requiresSession);
 		} elseif($response->MCM() != null && !$response->MCM()->WasSuccess()) {
 			throw new \CHAOSException($response->MCM()->Error()->Message());
 		} elseif($response->SecureCookie() != null && !$response->SecureCookie()->WasSuccess()) {
