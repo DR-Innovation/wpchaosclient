@@ -549,19 +549,26 @@ class WPChaosClient {
 	}
 
 	public static function debug_chaos_output() {
-		echo "<div class='debugging-chaos-requests' style='background:#EEEEEE;position:absolute;top:0px;left:0px;right:0px;opacity:0.9;z-index:1050;padding:1em;'>";
+		echo "<div class='debugging-chaos-requests' style='background:#EEEEEE;position:absolute;top:0;left:0;right:0;opacity:0.9;z-index:1050;padding:1em;'>";
 		$c = 1;
 		foreach(WPChaosClient::$debug_calls as $call) {
 			$duration = round($call['duration'] * 1000);
 			$cached = $call['cached'] ? " CACHED" : "";
 
+			//Convert bool to "bool"
 			foreach($call['parameters'] as $param_k => $param_v) {
 				if(is_bool($param_v)) {
 					$call['parameters'][$param_k] = ($param_v ? "true" : "false");
 				}
 			}
 
+			//If no AP is present, use current sessionGUID
+			if(!isset($call['parameters']['accessPointGUID'])) {
+				$call['parameters']['sessionGUID'] = self::instance()->sessionGUID();
+			}
+
 			$chaos_link = add_query_arg($call['parameters'],get_option('wpchaos-servicepath')."/".$call['path']);
+			
 			echo "<div class='debugging-chaos-call' style='border-bottom:1px solid black;'>";
 			echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service (took $duration ms $cached).</h1>";
 			echo '<h3>Call: <a target="_blank" href="'.htmlentities($chaos_link).'">'.$chaos_link.'</a><h3>';
