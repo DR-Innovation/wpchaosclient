@@ -24,6 +24,14 @@
 class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 
 	/**
+	 * Filter prefix for this object
+	 * Default is WPChaosClient::OBJECT_FILTER_PREFIX
+	 * Use in: add_filter($object_filter_prefix.<name>,<callback>);
+	 * @var string
+	 */
+	private $object_filter_prefix;
+
+	/**
 	 * Variables created by WP filters are cached
 	 * @var array
 	 */
@@ -35,9 +43,11 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 * Constructor
 	 * 
 	 * @param \CHAOS\Portal\Client\Data\Object $chaos_object
+	 * @param string $prefix 
 	 */
-	public function __construct(\stdClass $chaos_object) {
+	public function __construct(\stdClass $chaos_object, $prefix = WPChaosClient::OBJECT_FILTER_PREFIX) {
 		parent::__construct($chaos_object);
+		$this->object_filter_prefix = $prefix;
 		do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
 	}
 
@@ -51,18 +61,13 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 */
 	public function __get($name) {
 
-		// $method = 'get_'.$name;
-		// if(method_exists($this, $method)) {
-		// 	return $this->$method();
-		// }
-
 		//Check if variable exist in cache and return
 		if(isset($this->variable_cache[$name])) {
 			return $this->variable_cache[$name];
 		//Check if a WP filter exist for variable, populate cache and return
-		} else if(array_key_exists(WPChaosClient::OBJECT_FILTER_PREFIX.$name, $GLOBALS['wp_filter'])) {
+		} else if(array_key_exists($this->object_filter_prefix.$name, $GLOBALS['wp_filter'])) {
 			// throw new RuntimeException("There are no filters for this variable: $".$name);
-			return $this->variable_cache[$name] = apply_filters(WPChaosClient::OBJECT_FILTER_PREFIX.$name, "", $this);
+			return $this->variable_cache[$name] = apply_filters($this->object_filter_prefix.$name, "", $this);
 		//Fallback to parent getter
 		} else {
 			return parent::__get($name);
@@ -80,19 +85,16 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	/**
 	 * Takes an Object/Get response from the CHAOS service and wraps every object in a WPChaosObject.
 	 * @param \CHAOS\Portal\Client\Data\ServiceResult $response The CHAOS response on an Object/Get request.
+	 * @param string $prefix
 	 * @return WPChaosObject[] An array of WPChaosObjects.
 	 */
-	public static function parseResponse(\CHAOS\Portal\Client\Data\ServiceResult $response) {
+	public static function parseResponse(\CHAOS\Portal\Client\Data\ServiceResult $response, $prefix = WPChaosClient::OBJECT_FILTER_PREFIX) {
 		$result = array();
 		foreach($response->MCM()->Results() as $object) {
-			$result[] = new WPChaosObject($object);
+			$result[] = new WPChaosObject($object,$prefix);
 		}
 		return $result;
 	}
-
-	// public function get_type() {
-	// 	var_dump($this->chaos_object->getObject()->Files);
-	// }
 
 	public function increment_metadata_field($metadata_schema_guid, $metadata_language, $xpath, $value, $fields_invalidated = array()) {
 		$metadata = $this->get_metadata($metadata_schema_guid);
