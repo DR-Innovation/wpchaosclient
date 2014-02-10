@@ -352,8 +352,10 @@ class WPChaosClient {
 					echo '<link rel="canonical" href="'.$link.'" />'."\n";
 				});
 
+				$template = apply_filters('chaos-object-template', 'chaos-object-page');
+
 				//Look in theme dir and include if found
-				$include = locate_template('templates/chaos-object-page.php', false);
+				$include = locate_template('templates/'.$template.'.php', false);
 				if($include == "") {
 					//Include from plugin template	
 					$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
