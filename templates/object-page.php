@@ -5,8 +5,7 @@
  */
 get_header(); ?>
 
-<article class="container single-material" id="<?php echo WPChaosClient::get_object()->GUID ?>">
-	<div>
+<article class="row single-material" id="<?php echo WPChaosClient::get_object()->GUID ?>">
 		<div class="col-lg-9 col-12">
 			<div>
 				<?php dynamic_sidebar( 'wpchaos-obj-featured' ); ?>
@@ -22,7 +21,6 @@ get_header(); ?>
 				</ul>
 			<?php endif;?>
 		</div>
-	</div>
 </article>
 
 <?php get_footer(); ?>
