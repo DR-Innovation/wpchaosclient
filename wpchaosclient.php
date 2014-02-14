@@ -290,7 +290,7 @@ class WPChaosClient {
 		if(empty(self::$attributes)) {
 			$matches = array();
 			foreach($wp_filter as $filter => $arr) {
-				if(preg_match('/^'.self::OBJECT_FILTER_PREFIX.'(.*)/',$filter,$matches)) {
+				if(preg_match('/^'.self::OBJECT_FILTER_PREFIX.'([^-]*)/',$filter,$matches)) {
 					self::$attributes[$matches[1]] = ucfirst($matches[1]);
 				}
 			}
@@ -546,6 +546,7 @@ class WPChaosClient {
 
 		require("wpportalclient.php");
 		require("wpchaosobject.php");
+		require("widgets/chaoswidget.php");
 		require("widgets/attribute.php");
 		require("widgets/multiattribute.php");
 	}

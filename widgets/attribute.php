@@ -8,13 +8,7 @@
  * WordPress Widget that makes it possible to style
  * and display one data attribute from a CHAOs object
  */
-class WPChaosObjectAttrWidget extends WP_Widget {
-
-	/**
-	 * Fields in widget. Defines keys for values
-	 * @var array
-	 */
-	private $fields;
+class WPChaosObjectAttrWidget extends WPChaosWidget {
 
 	/**
 	 * Constructor
@@ -74,51 +68,7 @@ class WPChaosObjectAttrWidget extends WP_Widget {
 		$title = isset( $instance[ 'attribute' ]) ? ucfirst($instance['attribute']) : "";
 		echo '<input type="hidden" id="'.$this->get_field_id('title').'" value="'.$title.'">';
 
-		//Print each field based on its type
-		foreach($this->fields as $field) {
-			$value = isset( $instance[ $field['name'] ]) ? $instance[ $field['name'] ] : $field['val'];
-			$name = $this->get_field_name( $field['name'] );
-			$title = $field['title'];
-			$id = $this->get_field_id( $field['name'] );
-
-			echo '<p>';
-			echo '<label for="'.$name.'">'.$title.'</label>';
-			switch($field['type']) {
-				case 'textarea':
-					echo '<textarea class="widefat" name="'.$name.'" >'.$value.'</textarea>';
-					break;
-				case 'select':
-					echo '<select class="widefat" name="'.$name.'">';
-					foreach($field['list'] as $opt_key => $opt_value) {
-						echo '<option value="'.$opt_key.'" '.selected( $value, $opt_key, false).'>'.$opt_value.'</option>';
-					}
-					echo '</select>';
-					break;
-				case 'text':
-				default:
-					echo '<input class="widefat" id="'.$id.'" name="'.$name.'" type="text" value="'.esc_attr( $value ).'" />';
-			}
-			echo '</p>';
-
-		}
-	}
-
-	/**
-	 * Callback for whenever the widget values should be saved
-	 * 
-	 * @param  array $new_instance New values from the form
-	 * @param  array $old_instance Previously saved values
-	 * @return array               Values to be saved
-	 */
-	public function update( $new_instance, $old_instance ) {
-
-		$instance = array();
-		
-		foreach($this->fields as $field) {
-			$instance[$field['name']] = ( ! empty( $new_instance[$field['name']] ) ) ? $new_instance[$field['name']]  : $field['val'];
-		}
-		
-		return $instance;
+		parent::form( $instance );
 	}
 
 }
