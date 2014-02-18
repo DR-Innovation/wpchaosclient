@@ -15,7 +15,7 @@ class WPChaosWidget extends WP_Widget {
 	 * Fields in widget. Defines keys for values
 	 * @var array
 	 */
-	protected $fields;
+	protected $fields = array();
 
 	/**
 	 * Constructor
@@ -59,19 +59,21 @@ class WPChaosWidget extends WP_Widget {
 
 		//Print each field based on its type
 		foreach($this->fields as $field) {
-			$value = isset( $instance[ $field['name'] ]) ? $instance[ $field['name'] ] : $field['val'];
+			$default_value = isset($field['val']) ? $field['val'] : '';
+			$value = isset( $instance[ $field['name'] ]) ? $instance[ $field['name'] ] : $default_value;
 			$name = $this->get_field_name( $field['name'] );
 			$title = $field['title'];
 			$id = $this->get_field_id( $field['name'] );
+			$type = isset($field['type']) ? $field['type'] : 'text';
 
 			//Populate list with callback
-			if(isset($field['list']) && is_array($field['list']) && !is_string($field['list'][0]) && is_callable($field['list'])) {
+			if(isset($field['list']) && is_array($field['list']) && is_callable($field['list'])) {
 				$field['list'] = call_user_func($field['list']);
 			}
 
 			echo '<p>';
 			echo '<label for="'.$name.'">'.$title.'</label>';
-			switch($field['type']) {
+			switch($type) {
 				case 'textarea':
 					echo '<textarea class="widefat" rows="16" cols="20" name="'.$name.'" >'.$value.'</textarea>';
 					break;
@@ -84,7 +86,7 @@ class WPChaosWidget extends WP_Widget {
 					break;
 				case 'checkbox':
 					foreach((array)$field['list'] as $opt_key => $opt_value) {
-						echo '<input type="checkbox" name="'.$name.'[]" value="'.$opt_key.'" '.checked( in_array($opt_key,$value), true, false).'> '.$opt_value.'';
+						echo '<input type="checkbox" name="'.$name.'[]" value="'.$opt_key.'" '.checked( in_array($opt_key,(array)$value), true, false).'> '.$opt_value.'';
 					}
 					break;
 				case 'text':
