@@ -424,8 +424,8 @@ class WPChaosClient {
 	 * Get instance of CHAOS Portal
 	 * @return WPPortalClient 
 	 */
-	public static function instance() {
-		if(self::$instance == null) {
+	public static function instance($renew = false) {
+		if(self::$instance == null || $renew) {
 			//Instantiate CHAOS Portal
 			self::$instance = new WPPortalClient(get_option('wpchaos-servicepath'), get_option('wpchaos-clientguid'));
 		}
