@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPChaosClient\n"
-"POT-Creation-Date: 2013-08-12 09:56+0100\n"
-"PO-Revision-Date: 2013-08-12 09:56+0100\n"
+"POT-Creation-Date: 2014-02-20 12:11+0100\n"
+"PO-Revision-Date: 2014-02-20 12:11+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da_DK\n"
@@ -19,103 +19,103 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
-#: ../config.php:10
+#: ../config.php:10 ../wpchaosclient.php:121
 msgid "General Settings"
 msgstr "Generelle indstillinger"
 
-#: ../config.php:15
+#: ../config.php:15 ../wpchaosclient.php:126
 msgid "Service Path"
 msgstr "Servicesti"
 
-#: ../config.php:20
+#: ../config.php:20 ../wpchaosclient.php:131
 msgid "Client GUID"
 msgstr "Klient GUID"
 
-#: ../config.php:25
+#: ../config.php:25 ../wpchaosclient.php:136
 msgid "Access Point GUID"
 msgstr "Adgangspunkt GUID"
 
-#: ../config.php:30
+#: ../config.php:30 ../wpchaosclient.php:141
 msgid "E-mail used for authentication"
 msgstr "E-mail til autentificering"
 
-#: ../config.php:35
+#: ../config.php:35 ../wpchaosclient.php:146
 msgid "Password"
 msgstr "Adgangskode"
 
-#: ../wpchaosclient.php:175
+#: ../wpchaosclient.php:204
 msgid "CHAOS Client"
 msgstr "CHAOS Klient"
 
-#: ../wpchaosclient.php:176
+#: ../wpchaosclient.php:205
 msgid "CHAOS"
 msgstr "CHAOS"
 
-#: ../wpchaosclient.php:194
+#: ../wpchaosclient.php:223
 msgid "Connection to CHAOS is established"
 msgstr "Forbindelse til CHAOS er etableret"
 
-#: ../wpchaosclient.php:196
+#: ../wpchaosclient.php:225
 #, php-format
 msgid "(session is %s last updated %s)"
 msgstr "(session er %s sidst opdateret %s)"
 
-#: ../wpchaosclient.php:199
+#: ../wpchaosclient.php:228
 msgid "Could not connect to CHAOS. Please check the details below."
 msgstr ""
 "Kunne ikke forbinde til CHAOS. Kontroller venligst nedenstående oplysninger."
 
-#: ../wpchaosclient.php:218
+#: ../wpchaosclient.php:247
 msgid "CHAOS Object - Featured"
 msgstr "CHAOS Objekt - Fremhævet"
 
-#: ../wpchaosclient.php:227
+#: ../wpchaosclient.php:256
 msgid "CHAOS Object - Main"
 msgstr "CHAOS Objekt - Primær"
 
-#: ../wpchaosclient.php:236
+#: ../wpchaosclient.php:265
 msgid "CHAOS Object - Sidebar"
 msgstr "CHAOS Objekt - Sidebar"
 
-#: ../widgets/attribute.php:26
+#: ../widgets/attribute.php:20
 msgid "CHAOS Object Attribute"
 msgstr "CHAOS Objekt-attribut"
 
-#: ../widgets/attribute.php:27
+#: ../widgets/attribute.php:21
 msgid "Style and display data from a CHAOS object"
 msgstr "Design og vis data fra et CHAOS objekt"
 
-#: ../widgets/attribute.php:32
+#: ../widgets/attribute.php:26
 msgid "Attribute"
 msgstr "Attribut"
 
-#: ../widgets/attribute.php:39 ../widgets/multiattribute.php:47
+#: ../widgets/attribute.php:33 ../widgets/multiattribute.php:41
 msgid "Markup"
 msgstr "Markup"
 
-#: ../widgets/multiattribute.php:41
+#: ../widgets/multiattribute.php:35
 msgid "CHAOS Object Multi Attributes"
 msgstr "CHAOS Objekt-multiattributter"
 
-#: ../widgets/multiattribute.php:42
+#: ../widgets/multiattribute.php:36
 msgid "Style and display several data from a CHAOS object"
 msgstr "Design og vis flere data fra et CHAOS objekt"
 
-#: ../widgets/multiattribute.php:111
+#: ../widgets/multiattribute.php:105
 #, php-format
 msgid "Template \"%s\" not found for CHAOS Object Multi Attributes Widget"
 msgstr ""
 "Skabelon \"%s\" blev ikke fundet for widgeten CHAOS Objekt-multiattributter"
 
-#: ../widgets/multiattribute.php:141
+#: ../widgets/multiattribute.php:111
 msgid "Allowed attributes:"
 msgstr "Tilladte attributter:"
 
-#: ../widgets/multiattribute.php:146 ../widgets/multiattribute.php:154
+#: ../widgets/multiattribute.php:116 ../widgets/multiattribute.php:124
 msgid "None"
 msgstr "Ingen"
 
-#: ../widgets/multiattribute.php:149
+#: ../widgets/multiattribute.php:119
 msgid "Found template files:"
 msgstr "Fundne skabelonfiler:"
 
