@@ -85,8 +85,11 @@ class WPChaosWidget extends WP_Widget {
 					echo '</select>';
 					break;
 				case 'checkbox':
+					echo '<p><input type="checkbox" name="'.$name.'" value="1" '.checked( (int)$value, true, false).'></p>';
+					break;
+				case 'checkbox-multi':
 					foreach((array)$field['list'] as $opt_key => $opt_value) {
-						echo '<input type="checkbox" name="'.$name.'[]" value="'.$opt_key.'" '.checked( in_array($opt_key,(array)$value), true, false).'> '.$opt_value.'';
+						echo '<p><input type="checkbox" name="'.$name.'[]" value="'.$opt_key.'" '.checked( in_array($opt_key,(array)$value), true, false).'> '.$opt_value.'</p>';
 					}
 					break;
 				case 'text':
@@ -111,7 +114,8 @@ class WPChaosWidget extends WP_Widget {
 		$instance = array();
 		
 		foreach($this->fields as $field) {
-			$instance[$field['name']] = ( ! empty( $new_instance[$field['name']] ) ) ? $new_instance[$field['name']]  : $field['val'];
+			$default_value = isset($field['val']) ? $field['val'] : '';
+			$instance[$field['name']] = ( ! empty( $new_instance[$field['name']] ) ) ? $new_instance[$field['name']]  : $default_value;
 		}
 		
 		return $instance;
