@@ -128,6 +128,27 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 		}
 	}
 
+	/**
+	 * Override parent set_metadata
+	 * On success in parent function,
+	 * the chaos object will be refreshed
+	 * which prunes any alterations made
+	 * Now we just make them again
+	 * @param  CHAOSPortalClientPortalClient $client
+	 * @param  string                        $schema_guid
+	 * @param  SimpleXMLElement              $xml
+	 * @param  string                        $languageCode
+	 * @param  string|null                   $revisionID
+	 */
+	public function set_metadata(\CHAOS\Portal\Client\PortalClient $client, $schema_guid, \SimpleXMLElement $xml, $languageCode, $revisionID = null) {
+		$return = parent::set_metadata($client,$schema_guid,$xml,$languageCode,$revisionID);
+		if($return) {
+			do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
+		}
+		return $return;
+	}
+
+
 }
 
 //eol
