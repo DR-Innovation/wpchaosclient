@@ -330,8 +330,10 @@ class WPChaosClient {
 			if($serviceResult && $serviceResult->MCM()->TotalCount() >= 1) {
 				// TODO: Consider if this prevents caching.
 				status_header(200);
-				global $wp_query;
+				global $wp_query, $page, $paged;
 				$wp_query->is_404 = false;
+				$wp_query->is_page = false;
+				$page = $paged = 1;
 				
 				if($serviceResult->MCM()->TotalCount() > 1) {
 					error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (search query was '. $searchQuery .').');
