@@ -93,8 +93,7 @@ class WPPortalClient extends PortalClient {
 			'response' => $response,
 			'duration' => $call_duration,
 			'cached' => ($cached_response !== false)
-		));
-		
+		));;
 		// Errors should throw exceptions.
 		if(!$response->WasSuccess()) {
 			throw new \CHAOSException($response->Error()->Message());

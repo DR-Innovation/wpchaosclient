@@ -308,13 +308,14 @@ class WPChaosClient {
 		$searchQuery = apply_filters(self::GENERATE_SINGLE_OBJECT_SOLR_QUERY, isset($_GET['guid'])?self::escapeSolrValue($_GET['guid']):null);
 		
 		if($searchQuery) {
+			$accesspoint = current_user_can(WPDKA::PUBLISH_STATE_CAPABILITY) ? false : null;
 			try {
 				// Don't cache an object page.
 				self::instance()->setCacheResponses(false);
 				$serviceResult = self::instance()->Object()->Get(
 					$searchQuery,	// Search query
 					null,	// Sort
-					null,	// AccessPoint given by settings.
+					$accesspoint,	// AccessPoint given by settings.
 					0,		// pageIndex
 					1,		// pageSize
 					true,	// includeMetadata
@@ -341,9 +342,11 @@ class WPChaosClient {
 				$objects = $serviceResult->MCM()->Results();
 				$object = new WPChaosObject($objects[0]);
 				self::set_object($object);
-			
+				
 				// Call this by reference.
-				do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
+				try {
+					do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
+				} catch (Exception $e) {}
 
 				//Remove meta and add a dynamic canonical for better seo
 				remove_action('wp_head', 'rel_canonical');
@@ -353,9 +356,9 @@ class WPChaosClient {
 					$link = WPChaosClient::get_object()->url;
 					echo '<link rel="canonical" href="'.$link.'" />'."\n";
 				});
-
+				
 				$template = apply_filters('chaos-object-template', 'chaos-object-page');
-
+				
 				//Look in theme dir and include if found
 				$include = locate_template('templates/'.$template.'.php', false);
 				if($include == "") {
