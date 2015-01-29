@@ -328,7 +328,7 @@ class WPChaosClient {
 			}
 			
 			// No need for a 404 page - as the template is just not applied if the 
-			if($serviceResult && $serviceResult->MCM()->TotalCount() >= 1) {
+			if(isset($serviceResult) && $serviceResult && $serviceResult->MCM()->TotalCount() >= 1) {
 				// TODO: Consider if this prevents caching.
 				status_header(200);
 				global $wp_query, $page, $paged;
