@@ -7,7 +7,7 @@
 /**
  *
  * Class for CHAOS material
- * 
+ *
  * @property-read string $title 		Get title
  * @property-read string $organisation 	Get name of organisation
  * @property-read string $thumbnail     Get url to thumbnail
@@ -36,14 +36,15 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 * @var array
 	 */
 	private $variable_cache = array();
-	
+
 	const CHAOS_OBJECT_CONSTRUCTION_ACTION = 'chaos-object-constrution';
+  const FILTER_PREPARE_RESULTS = 'wpchaossearch-prepare';
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param \CHAOS\Portal\Client\Data\Object $chaos_object
-	 * @param string $prefix 
+	 * @param string $prefix
 	 */
 	public function __construct(\stdClass $chaos_object, $prefix = WPChaosClient::OBJECT_FILTER_PREFIX) {
 		parent::__construct($chaos_object);
@@ -55,7 +56,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 * Magic getter for various metadata in CHAOS object
 	 * Use like $class->$name
 	 * Add filters like add_filter('wpchaos-object-'.$name,callback,priority,2)
-	 * 
+	 *
 	 * @param  string $name Variable to get
 	 * @return mixed 		Filtered data (from $chaos_object)
 	 */
@@ -73,7 +74,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 			return parent::__get($name);
 		}
 	}
-	
+
 	public function clear_cache($name = null) {
 		if($name) {
 			unset($this->variable_cache[$name]);
@@ -81,7 +82,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 			$this->variable_cache = array();
 		}
 	}
-	
+
 	/**
 	 * Takes an Object/Get response from the CHAOS service and wraps every object in a WPChaosObject.
 	 * @param \CHAOS\Portal\Client\Data\ServiceResult $response The CHAOS response on an Object/Get request.
@@ -111,7 +112,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 			throw new \RuntimeException("The element found using the provided xpath expression, wasn't exactly a single.");
 		}
 	}
-	
+
 	public function set_metadata_field($metadata_schema_guid, $metadata_language, $xpath, $value, $fields_invalidated = array()) {
 		$metadata = $this->get_metadata($metadata_schema_guid);
 		$element = $metadata->xpath($xpath);
@@ -133,12 +134,47 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 * Fetches an updated version of the CHAOS object from the webservice and invalidates all caches.
 	 * Call construction action again because the object has been refreshed
 	 * @param \CHAOS\Portal\Client\PortalClient $client The PortalCliet to use when communicating with CHAOS.
-	 */	
+	 */
 	public function refresh(\CHAOS\Portal\Client\PortalClient $client) {
 		parent::refresh($client);
 		do_action(self::CHAOS_OBJECT_CONSTRUCTION_ACTION, $this);
 	}
 
+  // Find related objects based on the title of the document
+  public function get_related($count=5) {
+    $text = $this->title;
+    if (is_array($this->tags_raw)) {
+      $text = $text .' '. implode($this->tags_raw, ' ');
+    }
+
+    $vars = array('text' => $text);
+    $query = '(' . apply_filters('wpchaos-solr-query', "", $vars) . ')';
+
+    $results = WPChaosClient::instance()->Object()->Get(
+      $query,	// Search query
+      'score desc',	// Sort
+      null,	// AccessPoint given by settings.
+      0,		// pageIndex
+      $count,		// pageSize
+      true,	// includeMetadata
+      true,	// includeFiles
+      true,	// includeObjectRelations
+      true, 	// includeAccessPoints
+      true 	// POST instead of GET
+    );
+
+    $results = apply_filters(self::FILTER_PREPARE_RESULTS, $results);
+    $results = array_map(function($result) {
+      return new WPChaosObject($result);
+    }, $results->MCM()->Results());
+
+    // Filter out the current object
+    $results = array_filter($results, function($result) {
+      return $result->GUID !== $this->GUID;
+    });
+
+    return $results;
+  }
 
 }
 
