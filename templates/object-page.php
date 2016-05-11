@@ -5,13 +5,8 @@
  */
 get_header(); ?>
 
-<div class="fluid-container body-container">
-  <div class="dark-search no-show">
-    <div class="search row"><?php dynamic_sidebar('Top'); ?></div>
-  </div>
-</div>
 
-<div class="container">
+<div class="fluid-container body-container">
   <div class="row">
     <article class="single-material" id="<?php echo WPChaosClient::get_object()->GUID ?>">
       <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
