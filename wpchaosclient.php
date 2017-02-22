@@ -5,11 +5,11 @@
  */
 /*
 Plugin Name: WordPress Chaos Client
-Plugin URI: 
+Plugin URI:
 Description: Adds connectivity to CHAOS Portal and API to manipulate data from CHAOS objects in WordPress.
 Author: Joachim Jensen <joachim@opensourceshift.com>
 Version: 1.0
-Author URI: 
+Author URI:
 Text-domain: wpchaosclient
 */
 
@@ -49,11 +49,11 @@ class WPChaosClient {
 	 * Prefix for filters to be used on WPChaosObject
 	 */
 	const OBJECT_FILTER_PREFIX = 'wpchaos-object-';
-	
+
 	const GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION = 'wpchaos-before-get-object-page-template';
-	
+
 	const GENERATE_SINGLE_OBJECT_SOLR_QUERY = 'wpchaos-generate-single-object-solr-query';
-	
+
 	public static $debug_calls = array();
 
 	/**
@@ -68,7 +68,7 @@ class WPChaosClient {
 			add_action('admin_menu', array(&$this,'create_submenu'));
 			add_action('admin_init', array(&$this,'register_settings'));
 			add_action('admin_init', array(&$this,'settings_updated'));
-			
+
 			add_action('chaos-settings-updated', function() {
 				WPChaosClient::instance()->resetSession();
 			});
@@ -80,7 +80,7 @@ class WPChaosClient {
 		add_action('widgets_init', array(&$this,'add_widget_areas'), 99);
 
 		add_shortcode( 'chaos-total-count', array( &$this, 'total_count_shortcode' ) );
-		
+
 		$thiz = $this;
 		$prev_handler = set_exception_handler(function($e) use ($thiz) {
 			if($e instanceof \CHAOSException) {
@@ -90,19 +90,19 @@ class WPChaosClient {
 				throw $e;
 			}
 		});
-		
+
 		if(WP_DEBUG && array_key_exists('debug-chaos', $_GET)) {
 			add_action('wpportalclient-service-call-returned', function($call) {
 				WPChaosClient::$debug_calls[] = $call;
 			});
-			
+
 			add_action('admin_footer', array(__CLASS__,'debug_chaos_output'));
 			add_action('wp_footer', array(__CLASS__,'debug_chaos_output'));
 		}
 	}
 
 	/**
-	 * Load domain for i18n 
+	 * Load domain for i18n
 	 * @return void
 	 */
 	public function load_textdomain() {
@@ -111,7 +111,7 @@ class WPChaosClient {
 
 	/**
 	 * Create and register setting fields for administration
-	 * @return void 
+	 * @return void
 	 */
 	public function register_settings() {
 
@@ -157,7 +157,7 @@ class WPChaosClient {
 		foreach($this->settings as $section) {
 
 			//Validate
-			if(!isset($section['name'],$section['title'],$section['fields'])) 
+			if(!isset($section['name'],$section['title'],$section['fields']))
 				continue;
 
 			//Add section to WordPress
@@ -178,7 +178,7 @@ class WPChaosClient {
 		 			foreach($setting['precond'] as $precondition) {
 		 				if(!$precondition['cond'])
 		 					add_action( 'admin_notices', function() use(&$precondition) { echo '<div class="error"><p>'.$precondition['message'].'</p></div>'; },10);
-		 			} 				
+		 			}
 		 		}
 
 		 		// Add field to section
@@ -193,13 +193,13 @@ class WPChaosClient {
 		 		register_setting($this->menu_page,$setting['name']);
 			}
 
-		}	 	
-	 	
+		}
+
 	 }
 
 	/**
 	 * Create submenu and call page for settings
-	 * @return void 
+	 * @return void
 	 */
 	public function create_submenu() {
 		add_submenu_page(
@@ -209,7 +209,7 @@ class WPChaosClient {
 			'manage_options',
 			$this->menu_page,
 			array(&$this,'create_submenu_page')
-		); 
+		);
 	}
 
 	/**
@@ -236,7 +236,7 @@ class WPChaosClient {
 		do_settings_sections($this->menu_page);
 		submit_button();
 		echo '</form></div>'."\n";
-		
+
 	}
 
 	/**
@@ -275,7 +275,7 @@ class WPChaosClient {
 		 register_widget( 'WPChaosObjectAttrWidget' );
 		 register_widget( 'WPChaosObjectMultiWidget' );
 	}
-	
+
 	public function total_count_shortcode($atts) {
 		extract( shortcode_atts( array(
 			'query' => ''
@@ -304,12 +304,12 @@ class WPChaosClient {
 
 	/**
 	 * Get data and include template for a single CHAOS object
-	 * @return void 
+	 * @return void
 	 */
 	public function get_object_page() {
 		global $wp_query;
 		$searchQuery = apply_filters(self::GENERATE_SINGLE_OBJECT_SOLR_QUERY, isset($_GET['guid'])?self::escapeSolrValue($_GET['guid']):null);
-		
+
 		if($searchQuery) {
 			$accesspoint = current_user_can(WPDKA::PUBLISH_STATE_CAPABILITY) ? false : null;
 			try {
@@ -329,8 +329,8 @@ class WPChaosClient {
 				// Do nothing but log it.
 				error_log('CHAOS Error when calling get_object_page: '.$e->getMessage());
 			}
-			
-			// No need for a 404 page - as the template is just not applied if the 
+
+			// No need for a 404 page - as the template is just not applied if the
 			if(isset($serviceResult) && $serviceResult && $serviceResult->MCM()->TotalCount() >= 1) {
 				// TODO: Consider if this prevents caching.
 				status_header(200);
@@ -338,14 +338,14 @@ class WPChaosClient {
 				$wp_query->is_404 = false;
 				$wp_query->is_page = false;
 				$page = $paged = 1;
-				
+
 				if($serviceResult->MCM()->TotalCount() > 1) {
 					error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (search query was '. $searchQuery .').');
 				}
 				$objects = $serviceResult->MCM()->Results();
 				$object = new WPChaosObject($objects[0]);
 				self::set_object($object);
-				
+
 				// Call this by reference.
 				try {
 					do_action(self::GET_OBJECT_PAGE_BEFORE_TEMPLATE_ACTION, self::get_object());
@@ -359,20 +359,20 @@ class WPChaosClient {
 					$link = WPChaosClient::get_object()->url;
 					echo '<link rel="canonical" href="'.$link.'" />'."\n";
 				});
-				
+
 				$template = apply_filters('chaos-object-template', 'chaos-object-page');
-				
+
 				//Look in theme dir and include if found
 				$include = locate_template('templates/'.$template.'.php', false);
 				if($include == "") {
-					//Include from plugin template	
+					//Include from plugin template
 					$include = plugin_dir_path(__FILE__)."/templates/object-page.php";
 				}
 				require($include);
 				self::reset_object();
 				exit();
 			}
-			
+
 			// If we get to this point, and guid was a query parameter - we didn't get what we were looking for.
 			if(array_key_exists('guid', $_GET)) {
 				// The user specifically asked for an object of a particular GUID.
@@ -412,17 +412,17 @@ class WPChaosClient {
 				echo '<input class="'.$class.'" name="'.$args['name'].'" type="text" value="'.$current_value.'" />';
 		}
 	}
-	
+
 	/**
 	 * This is called on admin_init to check if this plugins options was updated.
-	 * @return void 
+	 * @return void
 	 */
 	public function settings_updated() {
 		global $pagenow;
 		$on_options_page = ($pagenow == 'options-general.php');
 		$on_plugins_page = (isset($_GET['page']) && $_GET['page'] == $this->menu_page);
 		$just_updated = (isset($_GET['settings-updated']) && $_GET['settings-updated'] == 'true');
-		
+
 		if($on_options_page && $on_plugins_page && $just_updated) {
 			do_action('chaos-settings-updated');
 		}
@@ -430,7 +430,7 @@ class WPChaosClient {
 
 	/**
 	 * Get instance of CHAOS Portal
-	 * @return WPPortalClient 
+	 * @return WPPortalClient
 	 */
 	public static function instance($renew = false) {
 		if(self::$instance == null || $renew) {
@@ -461,18 +461,18 @@ class WPChaosClient {
 
 	/**
 	 * Free current object
-	 * @return void 
+	 * @return void
 	 */
 	public static function reset_object() {
 		self::set_object(null);
 	}
-	
+
 	public function handle_chaos_exception(\CHAOSException $exception) {
 		$trace = $exception->getTrace();
-		
+
 		// Generate a filename for the trace dump file.
 		$traceDumpFile = tempnam(sys_get_temp_dir(), 'chaos-tracedump-');
-		
+
 		// Log this exception.
 		if($traceDumpFile != false) {
 			file_put_contents($traceDumpFile, json_encode($trace));
@@ -480,18 +480,18 @@ class WPChaosClient {
 		} else {
 			error_log('CHAOS Error: "' . $exception->getMessage() . '" (unable to store tracedump)', 0);
 		}
-		
+
 		if(in_array_r(get_option('wpchaos-email'), $exception->getTrace(), true) || in_array_r(get_option('wpchaos-password'), $exception->getTrace(), true)) {
 			$trace = null;
 			$exception = null;
 		}
-		
+
 		if(locate_template('chaos-exception.php', true) == "") {
 			require(plugin_dir_path(__FILE__)."/templates/chaos-exception.php");
 		}
 		locate_template('footer.php', true);
 	}
-	
+
 	public static function generate_facet_query($fields) {
 		$result = array();
 		foreach($fields as $field) {
@@ -499,7 +499,7 @@ class WPChaosClient {
 		}
 		return implode("+AND+", $result);
 	}
-	
+
 	public static function index_search(array $facetFields, $query = "", $accessPointGUID = null) {
 		$result = array();
 		$facetsResponse = WPChaosClient::instance()->Index()->Search(WPChaosClient::generate_facet_query($facetFields), $query, $accessPointGUID);
@@ -513,7 +513,7 @@ class WPChaosClient {
 		}
 		return $result;
 	}
-	
+
 	public static function summed_index_search(array $facetFields, $query = "") {
 		$searchResult = self::index_search($facetFields, $query);
 		$result = array();
@@ -528,8 +528,8 @@ class WPChaosClient {
 
 	/**
 	 * Escape characters to be used in SOLR
-	 * @param  string $string 
-	 * @return string         
+	 * @param  string $string
+	 * @return string
 	 */
 	public static function escapeSolrValue($string)
 	{
@@ -541,7 +541,7 @@ class WPChaosClient {
 
 	/**
 	 * Load files and libraries
-	 * @return void 
+	 * @return void
 	 */
 	private function load_dependencies() {
 
@@ -578,7 +578,7 @@ class WPChaosClient {
 			}
 
 			$chaos_link = add_query_arg($call['parameters'],get_option('wpchaos-servicepath')."/".$call['path']);
-			
+
 			echo "<div class='debugging-chaos-call' style='border-bottom:1px solid black;'>";
 			echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service (took $duration ms $cached).</h1>";
 			echo '<h3>Call: <a target="_blank" href="'.htmlentities($chaos_link).'">'.$chaos_link.'</a><h3>';

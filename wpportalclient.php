@@ -14,7 +14,7 @@ class CHAOSException extends \RuntimeException {}
  * stored in the database
  */
 class WPPortalClient extends PortalClient {
-	
+
 	/**
 	 * How long time is a CHAOS session timeout?
 	 * @var string Will be appended a '-' and used as argument for a call to the strtotime function.
@@ -24,25 +24,25 @@ class WPPortalClient extends PortalClient {
 	const WP_CHAOS_CLIENT_SESSION_GUID_KEY = 'wpchaosclient-session-guid';
 	const CACHE_GROUP = 'WPPortalClient';
 	const CACHE_EXPIRES = 7200; // 60*60*2 = Two hours
-	
+
 	public function __construct($servicePath, $clientGUID) {
 		// Make sure that the constructor is called without the session getting autocreated.
 		parent::__construct($servicePath, $clientGUID, false);
 	}
-	
+
 	/**
 	 * This field holds the accumulated response time in seconds.
 	 * @var integer
 	 */
 	protected $accumulatedResponseTime = 0;
-	
+
 	public function getAccumulatedResponseTime() {
 		return $this->accumulatedResponseTime;
 	}
-	
+
 	// Caching is on by default.
 	protected $_allow_cached_response = true;
-	
+
 	public function setCacheResponses($allow_cached_response) {
 		$this->_allow_cached_response = $allow_cached_response;
 	}
@@ -68,9 +68,9 @@ class WPPortalClient extends PortalClient {
 		// 	$query = array();
 		// }
 		// $parameters['query'] = implode("+AND+", array_merge($query, $this->global_constraints));
-		
+
 		$beforeCall = microtime(true);
-		
+
 		// Check if the request is cached.
 		$cache_key = md5(strval($path) . strval($method) . print_r($parameters, true) . strval($requiresSession));
 
@@ -121,7 +121,7 @@ class WPPortalClient extends PortalClient {
 			return $response;
 		}
 	}
-	
+
 	public function SessionGUID() {
 		if(parent::SessionGUID() == null) {
 			// Get the session stored in the database.
@@ -138,30 +138,30 @@ class WPPortalClient extends PortalClient {
 				update_option(self::WP_CHAOS_CLIENT_SESSION_UPDATED_KEY, time());
 			}
 		}
-		
+
 		// Keep the session alive.
 		$lastSessionUpdate = get_option(self::WP_CHAOS_CLIENT_SESSION_UPDATED_KEY, null);
 		$timeoutTime = strtotime('-'.self::SESSION_TIMEOUT);
-		
+
 		if($lastSessionUpdate < $timeoutTime) {
 			// The chaos session should be updated.
 			// We have to do this to prevent endless recursion.
 			update_option(self::WP_CHAOS_CLIENT_SESSION_UPDATED_KEY, time());
-			
+
 			try {
 				$response = $this->Session()->Update();
 			} catch(\Exception $e) {
 				error_log("CHAOS Session expired, but couldn't update it: " . $e->getMessage());
-				
+
 				// Reset sessions.
 				// Try again - this time forgetting any session.
 				return $this->resetSession();
 			}
 		}
-		
+
 		return parent::SessionGUID();
 	}
-	
+
 	protected function authenticateSession() {
 		if(get_option('wpchaos-email') && get_option('wpchaos-password')) {
 			$this->EmailPassword()->Login(get_option('wpchaos-email'), get_option('wpchaos-password'));
@@ -169,13 +169,13 @@ class WPPortalClient extends PortalClient {
 			throw new \CHAOSException("Either the email or password was not set.");
 		}
 	}
-	
+
 	public function resetSession() {
 		parent::SetSessionGUID(null, false);
 		update_option(self::WP_CHAOS_CLIENT_SESSION_GUID_KEY, null);
 		return $this->SessionGUID();
 	}
-	
+
 	protected $global_constraints = array();
 	public function addGlobalConstraint($constraint) {
 		$this->global_constraints[] = '(' . $constraint . ')';
