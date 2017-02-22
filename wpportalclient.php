@@ -48,17 +48,20 @@ class WPPortalClient extends PortalClient {
 	}
 
 	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
-		
-		//If accessPointGUID is type null and a global access point is present in settings,
-		//include the latter as accessPointGUID
-		if((!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] === null) && get_option('wpchaos-accesspoint-guid')) {
+		if(!isset($parameters['accessPointGUID']) || $parameters['accessPointGUID'] === null) {
+			// If accessPointGUID is type null and a global access point is present in settings,
+			// include the latter as accessPointGUID
 			$parameters['accessPointGUID'] = get_option('wpchaos-accesspoint-guid');
-		//If accessPointGUID is type false, we do not want it included
-		//A session will be used instead
+			if(!$parameters['accessPointGUID']) {
+				$guide = 'Visit /wp-admin/options-general.php?page=wpchaos-settings';
+				throw new \Exception('Missing a CHAOS Access Point GUID: ' . $guide);
+			}
 		} else if($parameters['accessPointGUID'] === false) {
+			//If accessPointGUID is type false, we do not want it included
+			//A session will be used instead
 			unset($parameters['accessPointGUID']);
 		}
-		
+
 		// if(array_key_exists('query', $parameters) && $parameters['query'] != "") {
 		// 	$query = array('(' . $parameters['query'] . ')');
 		// } else {
