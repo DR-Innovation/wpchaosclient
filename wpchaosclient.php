@@ -46,6 +46,12 @@ class WPChaosClient {
 	public static $attributes;
 
 	/**
+	 * Should errors be thrown or simply printed
+	 * @var bool
+	 */
+	private static $throw_errors = false;
+
+	/**
 	 * Prefix for filters to be used on WPChaosObject
 	 */
 	const OBJECT_FILTER_PREFIX = 'wpchaos-object-';
@@ -83,7 +89,7 @@ class WPChaosClient {
 
 		$thiz = $this;
 		$prev_handler = set_exception_handler(function($e) use ($thiz) {
-			if($e instanceof \CHAOSException) {
+			if($e instanceof \CHAOSException && !self::$throw_errors) {
 				$thiz->handle_chaos_exception($e);
 			} else {
 				// Rethrow this if it's not a CHAOS Exception
@@ -537,6 +543,12 @@ class WPChaosClient {
 		$replace = array('\\ ', '\\ ', '\\\\', '\\/', '\\+', '\\-', '\\&', '\\|', '\\!', '\\(', '\\)', '\\{', '\\}', '\\[', '\\]', '\\^', '\\~', '\\*', '\\?', '\\:', '\\;');
 		$string = str_replace($match, $replace, $string);
 		return $string;
+	}
+
+	public static function set_throw_errors($throw_errors) {
+		$previous_throw_errors = self::$throw_errors;
+		self::$throw_errors = $throw_errors;
+		return $previous_throw_errors;
 	}
 
 	/**
