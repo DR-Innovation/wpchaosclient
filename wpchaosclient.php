@@ -85,6 +85,9 @@ class WPChaosClient {
 		$prev_handler = set_exception_handler(function($e) use ($thiz) {
 			if($e instanceof \CHAOSException) {
 				$thiz->handle_chaos_exception($e);
+			} else {
+				// Rethrow this if it's not a CHAOS Exception
+				throw $e;
 			}
 		});
 		
