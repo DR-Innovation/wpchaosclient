@@ -22,8 +22,6 @@ class WPPortalClient extends PortalClient {
 	const SESSION_TIMEOUT = '18 minutes';
 	const WP_CHAOS_CLIENT_SESSION_UPDATED_KEY = 'wpchaosclient-session-updated';
 	const WP_CHAOS_CLIENT_SESSION_GUID_KEY = 'wpchaosclient-session-guid';
-	const CACHE_GROUP = 'WPPortalClient';
-	const CACHE_EXPIRES = 7200; // 60*60*2 = Two hours
 
 	public function __construct($servicePath, $clientGUID) {
 		// Make sure that the constructor is called without the session getting autocreated.
@@ -38,13 +36,6 @@ class WPPortalClient extends PortalClient {
 
 	public function getAccumulatedResponseTime() {
 		return $this->accumulatedResponseTime;
-	}
-
-	// Caching is on by default.
-	protected $_allow_cached_response = true;
-
-	public function setCacheResponses($allow_cached_response) {
-		$this->_allow_cached_response = $allow_cached_response;
 	}
 
 	public function CallService($path, $method, array $parameters = null, $requiresSession = true) {
@@ -71,21 +62,8 @@ class WPPortalClient extends PortalClient {
 
 		$beforeCall = microtime(true);
 
-		// Check if the request is cached.
-		$cache_key = md5(strval($path) . strval($method) . print_r($parameters, true) . strval($requiresSession));
+		$response = parent::CallService($path, $method, $parameters, $requiresSession);
 
-		if($this->_allow_cached_response) {
-			$cached_response = wp_cache_get($cache_key, self::CACHE_GROUP);
-		} else {
-			$cached_response = false;
-		}
-		if($cached_response !== false) {
-			$response = $cached_response;
-		} else {
-			$response = parent::CallService($path, $method, $parameters, $requiresSession);
-			// Update the cache.
-			wp_cache_set($cache_key, $response, self::CACHE_GROUP, self::CACHE_EXPIRES);
-		}
 		$call_duration = microtime(true) - $beforeCall;
 		$this->accumulatedResponseTime += $call_duration;
 
@@ -94,8 +72,7 @@ class WPPortalClient extends PortalClient {
 			'method' => $method,
 			'parameters' => $parameters,
 			'response' => $response,
-			'duration' => $call_duration,
-			'cached' => ($cached_response !== false)
+			'duration' => $call_duration
 		));;
 		// Errors should throw exceptions.
 		if(!$response->WasSuccess()) {

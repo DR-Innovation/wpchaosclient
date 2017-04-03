@@ -319,8 +319,6 @@ class WPChaosClient {
 		if($searchQuery) {
 			$accesspoint = current_user_can(WPDKA::PUBLISH_STATE_CAPABILITY) ? false : null;
 			try {
-				// Don't cache an object page.
-				self::instance()->setCacheResponses(false);
 				$serviceResult = self::instance()->Object()->Get(
 					$searchQuery,	// Search query
 					null,	// Sort
@@ -575,7 +573,6 @@ class WPChaosClient {
 		$c = 1;
 		foreach(WPChaosClient::$debug_calls as $call) {
 			$duration = round($call['duration'] * 1000);
-			$cached = $call['cached'] ? " CACHED" : "";
 
 			//Convert bool to "bool"
 			foreach($call['parameters'] as $param_k => $param_v) {
@@ -592,7 +589,7 @@ class WPChaosClient {
 			$chaos_link = add_query_arg($call['parameters'],get_option('wpchaos-servicepath')."/".$call['path']);
 
 			echo "<div class='debugging-chaos-call' style='border-bottom:1px solid black;'>";
-			echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service (took $duration ms $cached).</h1>";
+			echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service (took $duration ms).</h1>";
 			echo '<h3>Call: <a target="_blank" href="'.htmlentities($chaos_link).'">'.$chaos_link.'</a><h3>';
 			echo "<pre style='margin:1em;color:#000000;'>";
 			echo htmlentities(print_r($call, true));
