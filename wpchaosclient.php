@@ -105,6 +105,15 @@ class WPChaosClient {
 			add_action('admin_footer', array(__CLASS__,'debug_chaos_output'));
 			add_action('wp_footer', array(__CLASS__,'debug_chaos_output'));
 		}
+
+		if(array_key_exists('solr-debug', $_GET)) {
+			add_action('wpportalclient-service-call-returned', function($call) {
+				WPChaosClient::$debug_calls[] = $call;
+			});
+
+			add_action('admin_footer', array(__CLASS__,'solr_debug_output'));
+			add_action('wp_footer', array(__CLASS__,'solr_debug_output'));
+		}
 	}
 
 	/**
@@ -590,10 +599,24 @@ class WPChaosClient {
 
 			echo "<div class='debugging-chaos-call' style='border-bottom:1px solid black;'>";
 			echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service (took $duration ms).</h1>";
-			echo '<h3>Call: <a target="_blank" href="'.htmlentities($chaos_link).'">'.$chaos_link.'</a><h3>';
+			echo '<h3>Call: <a target="_blank" href="'.htmlentities($chaos_link).'">'.$chaos_link.'</a></h3>';
 			echo "<pre style='margin:1em;color:#000000;'>";
 			echo htmlentities(print_r($call, true));
 			echo "</pre></div>";
+			$c++;
+		}
+		echo "</div>";
+	}
+
+	public static function solr_debug_output() {
+		echo "<div class='debugging-chaos-requests' style='background:#EEEEEE;position:absolute;top:0;left:0;right:0;opacity:0.9;z-index:1050;padding:1em;'>";
+		$c = 1;
+		foreach(WPChaosClient::$debug_calls as $call) {
+			$duration = round($call['duration'] * 1000);
+
+			echo "<div class='debugging-chaos-call' style='border-bottom:1px solid black;'>";
+			echo "<h1>$c of ". count(WPChaosClient::$debug_calls) ." call(s) to the CHAOS service (took $duration ms).</h1>";
+			echo "<div>Solr query: <pre style=\"-webkit-touch-callout: all;-webkit-user-select: all;-khtml-user-select: all;-moz-user-select: all;-ms-user-select: all;user-select: all;\">{$call['parameters']['query']}</pre></div>";
 			$c++;
 		}
 		echo "</div>";
