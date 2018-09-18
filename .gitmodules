@@ -1,6 +1,3 @@
-[submodule "CHAOS.Portal.Client-PHP"]
-	path = CHAOS.Portal.Client-PHP
-	url = https://github.com/CHAOS-Community/CHAOS.Portal.Client-PHP.git
 [submodule "lib/chaos-client"]
 	path = lib/chaos-client
 	url = https://github.com/CHAOS-Community/CHAOS.Portal.Client-PHP.git
