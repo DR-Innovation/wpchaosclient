@@ -35,7 +35,7 @@ class WPChaosClient {
 
 	/**
 	 * Container for current Chaos object
-	 * @var WPChaosObject|null
+	 * @var WPChaosDataObject|null
 	 */
 	public static $object;
 
@@ -356,7 +356,7 @@ class WPChaosClient {
 					error_log('CHAOS returned more than 1 (actually '.$serviceResult->MCM()->TotalCount().') results for the single object page (search query was '. $searchQuery .').');
 				}
 				$objects = $serviceResult->MCM()->Results();
-				$object = new WPChaosObject($objects[0]);
+				$object = new WPChaosDataObject($objects[0]);
 				self::set_object($object);
 
 				// Call this by reference.
@@ -455,19 +455,19 @@ class WPChaosClient {
 
 	/**
 	 * Get instance of current CHAOS object (if any)
-	 * @return WPChaosObject|null
+	 * @return WPChaosDataObject|null
 	 */
 	public static function get_object() {
 		return self::$object;
 	}
 	/**
 	 * Set current CHAOS object
-	 * @param WPChaosObject|stdClass|null
+	 * @param WPChaosDataObject|stdClass|null
 	 * @return void
 	 */
 	public static function set_object($object) {
 		if($object instanceof \stdClass) {
-			$object = new WPChaosObject($object);
+			$object = new WPChaosDataObject($object);
 		}
 		self::$object = $object;
 	}

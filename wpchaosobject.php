@@ -21,7 +21,7 @@
  * @property-read string $caption		Get the caption to display ontop of a thumbnail.
  * @property-read mixed  $var
  */
-class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
+class WPChaosDataObject extends \CHAOS\Portal\Client\Data\DataObject {
 
 	/**
 	 * Filter prefix for this object
@@ -43,7 +43,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	/**
 	 * Constructor
 	 *
-	 * @param \CHAOS\Portal\Client\Data\Object $chaos_object
+	 * @param \CHAOS\Portal\Client\Data\DataObject $chaos_object
 	 * @param string $prefix
 	 */
 	public function __construct(\stdClass $chaos_object, $prefix = WPChaosClient::OBJECT_FILTER_PREFIX) {
@@ -87,12 +87,12 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 	 * Takes an Object/Get response from the CHAOS service and wraps every object in a WPChaosObject.
 	 * @param \CHAOS\Portal\Client\Data\ServiceResult $response The CHAOS response on an Object/Get request.
 	 * @param string $prefix
-	 * @return WPChaosObject[] An array of WPChaosObjects.
+	 * @return WPChaosDataObject[] An array of WPChaosObjects.
 	 */
 	public static function parseResponse(\CHAOS\Portal\Client\Data\ServiceResult $response, $prefix = WPChaosClient::OBJECT_FILTER_PREFIX) {
 		$result = array();
 		foreach($response->MCM()->Results() as $object) {
-			$result[] = new WPChaosObject($object,$prefix);
+			$result[] = new WPChaosDataObject($object,$prefix);
 		}
 		return $result;
 	}
@@ -165,7 +165,7 @@ class WPChaosObject extends \CHAOS\Portal\Client\Data\Object {
 
     $results = apply_filters(self::FILTER_PREPARE_RESULTS, $results);
     $results = array_map(function($result) {
-      return new WPChaosObject($result);
+      return new WPChaosDataObject($result);
     }, $results->MCM()->Results());
 
     // Filter out the current object
