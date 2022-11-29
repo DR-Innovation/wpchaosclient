@@ -144,7 +144,7 @@ class WPChaosDataObject extends \CHAOS\Portal\Client\Data\DataObject {
   public function get_related($count=5) {
     $text = $this->title;
     if (is_array($this->tags_raw)) {
-      $text = $text .' '. implode($this->tags_raw, ' ');
+      $text = $text .' '. implode(' ', $this->tags_raw);
     }
 
     $vars = array('text' => $text);
